@@ -106,7 +106,7 @@ FORMAT = ihex
 
 
 # Target file name (without extension).
-TARGET = USBtoSerial
+TARGET = PowCap
 
 
 # Object files directory
@@ -137,6 +137,8 @@ include $(LUFA_PATH)/LUFA/makefile
 # List C source files here. (C dependencies are automatically generated.)
 SRC = $(TARGET).c                                                 \
 	  Descriptors.c                                               \
+	  SPI.c                                                       \
+      FSM.c                                                       \
 	  $(LUFA_SRC_USB)                                             \
 	  $(LUFA_SRC_USBCLASS)
 

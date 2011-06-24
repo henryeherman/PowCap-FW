@@ -1,13 +1,14 @@
-
-
-
 #ifndef _FSM_H_
 #define _FSM_H_
 
-#define SET_FILTER_GAIN1    'f'
-#define SET_FILTER_GAIN2    'F'
+#include <stdint.h>
+#include <LUFA/Drivers/Board/LEDs.h>
 
+#define GAIN1    'g'
+#define GAIN2    'G'
+#define NUMBER_CMDS 5
 
+#define VALIDCMD(c) (((c)==(GAIN1)) || ((c)==(GAIN2)))
 typedef enum {WAITING_CMD,PARAM1,PARAM2,RUN} FSM_STATE;
 
 FSM_STATE FSM_State;
@@ -19,54 +20,32 @@ typedef struct{
 
 COMMAND cmd;
 
-void init_FSM() {
-    FSM_State = WAITING;
-    void init_Command(&cmd);
-}
+typedef void(*CMD_CALLBK)(char *param);
 
-void init_Command(*COMMAND cmd) {
-    cmd->command = 0;
-    cmd->param[0] = '\0';
-}
+typedef struct{
+    int16_t id; 
+    CMD_CALLBK fxn;
+} CALLBACK;
 
-void setCommand(*COMMAND cmd, int16_t c) {
-    
-    if(VALIDCMD(c)) { 
-        cmd->command = c;
-        FSM_State = PARAM1;
-    } else {
-        FSM_State = WAITING_CMD;
-        init_Command(&cmd);
-    }
-}
+CALLBACK cb_command[NUMBER_CMDS];
 
-void setParam0(*COMMAND cmd, int16_t p) {
-    cmd->param[0] = (char)p;
-    cmd->param[1] = '\0';
-    FSM_State = PARAM2;
-}
+void init_callbacks(void);
 
-void setParam1(*COMMAND cmd, int16_t p) {
-    cmd->param[1] = (char)p;
-    cmd->param[2] = '\0';
-    FSM_State = RUN;
-}
+void setup_callbacks(void);
 
-void processByte(int16_t rxbyte) {
-    switch FSM_State {
-    
-    case WAITING_CMD:
-        setCommand(&cmd, rxbyte);
-    case PARAM1:
-        setParam0(*COMMAND cmd, rxbyte);
-    case PARAM2:
-        setParam1(*COMMAND cmd, rxbyte);
-    case RUN
-        if(rxbyte == '\r') {
-            init_Command(&cmd);
-        }
-    }
-}
+CALLBACK search_callback(COMMAND cmd);
+
+void init_FSM(void);
+
+void init_command(COMMAND *cmd); 
+
+void set_command(COMMAND *cmd, int16_t c);
+
+void set_param0(COMMAND *cmd, int16_t p);
+
+void set_param1(COMMAND *cmd, int16_t p);
+
+void process_byte(int16_t rxbyte);
 
 #endif
 

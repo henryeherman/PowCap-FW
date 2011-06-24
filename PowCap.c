@@ -42,6 +42,7 @@
 #include <ctype.h>
 #include <avr/io.h>
 #include "SPI.h"
+#include "FSM.h"
 /** Circular buffer to hold data from the serial port before it is sent to the host. */
 
 static RingBuffer_t USB_Buffer;
@@ -99,10 +100,11 @@ int main(void)
         	if (!(ReceivedByte < 0)) {
                   RingBuffer_Insert(&USB_Buffer, ReceivedByte);
                   RingBuffer_Insert(&USB_Buffer, 'a');
-                  LEDs_ToggleLEDs(LEDS_LED1);
-                  SELECT1();
-                  SPI_MaterTransmit((char)ReceivedByte);
-                  UNSELECT1();
+                  //LEDs_ToggleLEDs(LEDS_LED1);
+                  process_byte(ReceivedByte);
+                  //SELECT1();
+                  //SPI_MaterTransmit((char)ReceivedByte);
+                  //UNSELECT1();
 
              }
 		}
