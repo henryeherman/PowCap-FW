@@ -33,7 +33,7 @@ void init_callbacks(void);
 
 void setup_callbacks(void);
 
-CALLBACK search_callback(COMMAND cmd);
+int16_t search_callback(COMMAND *cmd);
 
 void init_FSM(void);
 

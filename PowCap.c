@@ -99,7 +99,7 @@ int main(void)
 			/* Read bytes from the USB OUT endpoint into the USART transmit buffer */
         	if (!(ReceivedByte < 0)) {
                   RingBuffer_Insert(&USB_Buffer, ReceivedByte);
-                  RingBuffer_Insert(&USB_Buffer, 'a');
+                  //RingBuffer_Insert(&USB_Buffer, 'a');
                   //LEDs_ToggleLEDs(LEDS_LED1);
                   process_byte(ReceivedByte);
                   //SELECT1();
@@ -150,7 +150,7 @@ void SetupHardware(void)
     //LEDs_TurnOnLEDs(LEDS_LED1);
     SPI_MasterInit();
     USB_Init();
-
+    init_callbacks();
 
 }
 

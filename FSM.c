@@ -1,29 +1,34 @@
 #include <avr/io.h>
 #include "FSM.h"
 #include "commands.h"
-
+#include <ctype.h>
 void init_callbacks() {
-    //for(int i=0;i<NUMBER_CMDS;i++){
-    //    cb_command[i].id = NULL;
-    //    cb_command[i].fxn = NULL;
-    //}
+    for(int i=0;i<NUMBER_CMDS;i++){
+        cb_command[i].id = 0;
+        cb_command[i].fxn = NULL;
+    }
 }
 
 void setup_callbacks() {
-    //cb_command[0].id = GAIN1;
-    //cb_command[0].fxn = cb_gain1; 
-    //cb_command[1].id = GAIN2;
-    //cb_command[1].fxn = cb_gain2;
+    init_callbacks();
+    cb_command[0].id = GAIN1;
+    cb_command[0].fxn = cb_gain1; 
+    cb_command[1].id = GAIN2;
+    cb_command[1].fxn = cb_gain2;
 }
 
 
-CALLBACK search_callback(COMMAND cmd) {
-    //for (int i=0;i<NUMBER_CMDS;i++) {
-    //    if (cmd->command == cb_command[i].id) {
-    //        return cb_command[i].fxn;
-    //    }
-    //}
-    //return NULL;
+int16_t search_callback(COMMAND *cmd) {
+    LEDs_ToggleLEDs(LEDS_LED1);
+    for (int i=0;i<NUMBER_CMDS;i++) {
+        if (cmd->command == cb_command[i].id) {
+            LEDs_ToggleLEDs(LEDS_LED1);
+            cb_command[i].fxn(cmd->param);
+
+            return 0;
+        }
+    }
+    return -1;
 }
 
 void init_FSM() {
@@ -38,7 +43,6 @@ void init_command(COMMAND *cmd) {
 
 void set_command(COMMAND *cmd, int16_t c) {
     if(VALIDCMD(c)) { 
-    LEDs_ToggleLEDs(LEDS_LED1);
         cmd->command = c;
         FSM_State = PARAM1;
     } else {
@@ -68,7 +72,6 @@ void set_param1(COMMAND *cmd, int16_t p) {
 }
 
 void process_byte(int16_t rxbyte) {
-    //LEDs_ToggleLEDs(LEDS_LED1);
     switch(FSM_State) { 
         case WAITING_CMD:
             set_command(&cmd, rxbyte);
@@ -80,10 +83,9 @@ void process_byte(int16_t rxbyte) {
             set_param1(&cmd, rxbyte);
             break;
         case RUN:
-            if(ispunct(rxbyte)) {
-                // Run Command Here!
+            if(isspace(rxbyte)) {
+                search_callback(&cmd);
                 init_FSM();
-                //LEDs_ToggleLEDs(LEDS_LED1);
                 break;
             }
         default:
