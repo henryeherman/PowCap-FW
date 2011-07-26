@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include <LUFA/Drivers/Board/LEDs.h>
-
+#include "commands.h"
 #define GAIN1    'g'
 #define GAIN2    'G'
 #define NUMBER_CMDS 5

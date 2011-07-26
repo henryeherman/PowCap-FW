@@ -150,7 +150,7 @@ void SetupHardware(void)
     //LEDs_TurnOnLEDs(LEDS_LED1);
     SPI_MasterInit();
     USB_Init();
-    init_callbacks();
+    setup_callbacks();
 
 }
 

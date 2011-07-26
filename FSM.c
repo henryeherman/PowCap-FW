@@ -19,12 +19,12 @@ void setup_callbacks() {
 
 
 int16_t search_callback(COMMAND *cmd) {
-    LEDs_ToggleLEDs(LEDS_LED1);
+    
     for (int i=0;i<NUMBER_CMDS;i++) {
-        if (cmd->command == cb_command[i].id) {
-            LEDs_ToggleLEDs(LEDS_LED1);
-            cb_command[i].fxn(cmd->param);
 
+        if (cmd->command == cb_command[i].id) {
+            //LEDs_ToggleLEDs(LEDS_LED1);
+            cb_command[i].fxn(cmd->param);
             return 0;
         }
     }

@@ -139,7 +139,8 @@ SRC = $(TARGET).c                                                 \
 	  Descriptors.c                                               \
 	  SPI.c                                                       \
       FSM.c                                                       \
-	  $(LUFA_SRC_USB)                                             \
+      commands.c                                                  \
+      $(LUFA_SRC_USB)                                             \
 	  $(LUFA_SRC_USBCLASS)
 
 
